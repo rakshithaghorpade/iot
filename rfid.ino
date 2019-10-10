@@ -1,35 +1,26 @@
-const int trigPin = 3;
-const int echoPin = 2;
-// defines variables
-long duration;
-int distance;
-void setup() {
-pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
-pinMode(12,OUTPUT);
-pinMode(echoPin, INPUT); // Sets the echoPin as an Input
-Serial.begin(9600); // Starts the serial communication
-}
-void loop() {
-// Clears the trigPin
-digitalWrite(trigPin, LOW);
-delayMicroseconds(2);
-// Sets the trigPin on HIGH state for 10 micro seconds
-digitalWrite(trigPin, HIGH);
-delayMicroseconds(10);
-digitalWrite(trigPin, LOW);
-// Reads the echoPin, returns the sound wave travel time in microseconds
-duration = pulseIn(echoPin, HIGH);
-// Calculating the distance
-distance= duration*0.034/2;
-if(distance<10)
+#include<SoftwareSerial.h>
+SoftwareSerial mySerial(9, 10);
+int count = 0; // count = 0
+char input[12]; // character array of size 12
+boolean flag = 0; // flag =0
+void setup()
 {
-  digitalWrite(12,HIGH);
+Serial.begin(9600); // begin serial port with baud rate 9600bps
+mySerial.begin(9600);
+
 }
-else
+void loop()
 {
-  digitalWrite(12,LOW);
+if(mySerial.available())
+{
+count = 0;
+while(mySerial.available() && count < 12) // Read 12 characters and store them in input
+
+{
+input[count] =mySerial.read();
+count++;
+delay(5);
 }
-// Prints the distance on the Serial Monitor
-Serial.print("Distance: ");
-Serial.println(distance);
+Serial.print(input); // Print RFID tag number
+}
 }
